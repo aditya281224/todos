@@ -3,8 +3,9 @@ import "./App.css";
 
 function App() {
   const [input, setInput] = useState("");
-  const [todo, setTodoList] = useState([
-  ]);
+  const [todo, setTodoList] = useState([]);
+  const [flag, setFlag] = useState(false);
+  const [submittedTodos, setSubmittedTodos] = useState([]);
 
   const handlechange = (input) => {
     const arr = [...todo];
@@ -22,6 +23,14 @@ function App() {
     const newArr = [...todo];
     newArr.splice(index, 1);
     setTodoList(newArr);
+  };
+
+  const submitHandler = () => {
+    if (!flag) {
+      const pending = todo.filter((t) => !t.completed);
+      setSubmittedTodos(pending);
+    }
+    setFlag((prev) => !prev);
   };
 
   return (
@@ -57,6 +66,27 @@ function App() {
           </li>
         ))}
       </ul>
+
+      <button onClick={() => submitHandler(flag)}>
+        {flag ? "Undo" : "Submit your pending todo"}
+      </button>
+
+      {flag && (
+        <div>
+          {submittedTodos.length > 0 ? (
+            <div>
+              <h2>Pending Todos (Submitted):</h2>
+              <ul>
+                {submittedTodos.map((t) => (
+                  <li key={t.id}>{t.text}</li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <p>No pending todos submitted!</p>
+          )}
+        </div>
+      )}
     </div>
   );
 }
